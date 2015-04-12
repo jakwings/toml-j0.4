@@ -1,0 +1,39 @@
+{
+  "name": "toml-j0.4",
+  "version": "1.0.0",
+  "description": "A TOML v0.4.0 compliant parser.",
+  "main": "toml.js",
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha --bail --reporter spec test/*.js",
+    "build": "node build.js",
+    "prepublish": "node build.js"
+  },
+  "keywords": [
+    "toml",
+    "parser",
+    "ini"
+  ],
+  "author": "Jak Wings <jakwings@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jakwings/toml-j0.4.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/jakwings/toml-j0.4/blob/master/LICENSE"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/jakwings/toml-j0.4/issues"
+  },
+  "homepage": "https://github.com/jakwings/toml-j0.4",
+  "devDependencies": {
+    "browserify": "~9.0.8",
+    "js-yaml": "~3.2.7",
+    "mocha": "~2.2.4",
+    "pegjs": "~0.8.0",
+    "should": "~5.2.0",
+    "uglify-js": "~2.4.19"
+  }
+}

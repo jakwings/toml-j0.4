@@ -1,0 +1,195 @@
+expressions             "expressions"
+    = spacing* ( expression spacing* expressions? )?
+
+expression              "expression"
+    = table_array_header
+    / table_header
+    / key_value
+
+spacing
+    = whitespace
+    / newline
+    / comment
+
+newline                 "newline"
+    = "\n" / "\r\n"
+
+whitespace              "whitespace"
+    = [ \t]
+
+comment                 "comment"
+    = "#" ( !newline . )*
+
+key_value               "key-value pair"
+    = key whitespace* "=" whitespace* value
+
+key                     "key"
+    = unquoted_key
+    / quoted_key
+
+unquoted_key            "bare key"
+    = [a-zA-Z0-9\-_]+
+
+quoted_key              "quoted key"
+    = '"' basic_char+ '"'
+
+value                   "value"
+    = string
+    / boolean
+    / date_time
+    / float
+    / integer
+    / array
+    / inline_table
+
+string                  "string"
+    = ml_basic_string
+    / basic_string
+    / ml_literal_string
+    / literal_string
+
+basic_string            "basic string"
+    = '"' basic_char* '"'
+
+basic_char              "basic character"
+    = unescaped_char
+    / escaped_char
+
+unescaped_char          "normal basic character"
+    = !newline [^"\\]
+
+escaped_char            "escaped character"
+    = "\\" ["\\bfnrt]
+    / "\\u" four_hex_digit
+    / "\\U" eight_hex_digit
+
+four_hex_digit          "four hexadecimal digits"
+    = hex_digit hex_digit hex_digit hex_digit
+
+eight_hex_digit         "eight hexadecimal digits"
+    = hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit
+
+hex_digit               "hexadecimal digit"
+    = [0-9A-F]
+
+literal_string          "literal string"
+    = "'" literal_char* "'"
+
+literal_char            "literal character"
+    = !newline [^']
+
+ml_basic_string         "multi-line basic string"
+    = '"""' newline? ml_basic_text* '"""'
+
+ml_basic_text           "multi-line basic text"
+    = ml_basic_char
+    / "\\" newline
+    / newline
+
+ml_basic_char           "multi-line basic character"
+    = !'"""' ml_unescaped_char
+    / escaped_char
+
+ml_unescaped_char       "multi-line normal basic character"
+    = !newline [^\\]
+
+ml_literal_string       "multi-line literal string"
+    = "'''" newline? ml_literal_text* "'''"
+
+ml_literal_text         "multi-line literal text"
+    = !"'''" ml_literal_char
+    / newline
+
+ml_literal_char         "multi-line literal character"
+    = !newline .
+
+boolean                 "boolean value"
+    = "true"
+    / "false"
+
+float                   "decimal"
+    = integer ( fraction exponent? / exponent )
+
+fraction                "fractional part of decimal"
+    = "." digit ( "_"? digit )*
+
+exponent                "exponent"
+    = ( "e" / "E" ) integer
+
+integer                 "integer"
+    = sign? int_digits
+
+sign                    "plus/minus sign"
+    = "+"
+    / "-"
+
+int_digits              "digits of integer"
+    = digit_1to9 ( "_"? digit )+
+    / digit
+
+digit_1to9              "digit from 1 to 9"
+    = [1-9]
+
+digit                   "decimal digit"
+    = [0-9]
+
+date_time               "date-time"  // RFC 3339
+    = full_date "T" full_time
+
+full_date               "full date"
+    = year "-" month "-" mday
+
+year                    "full year (XXXX)"
+    = digit digit digit digit
+
+month                   "month (XX)"
+    = digit digit
+
+mday                    "day of month (XX)"
+    = digit digit
+
+full_time               "full time (HH:MM:SS[offset])"
+    = time time_offset?
+
+time                    "time (HH:MM:SS[fraction])"
+    = hour ":" minute ":" second second_fraction?
+
+hour                    "hour (HH)"
+    = digit digit
+
+minute                  "minute (MM)"
+    = digit digit
+
+second                  "second (SS)"
+    = digit digit
+
+second_fraction         "fractional part of second"
+    = "." digit+
+
+time_offset             "offset of time"
+    = "Z"
+    / sign hour ":" minute
+
+array                   "array"
+    = "[" spacing*
+          ( array_value
+            spacing*
+            ( "," spacing* )? )? "]"
+
+array_value             "array value"
+    = value ( spacing* "," spacing* array_value )?
+
+inline_table            "inline table"
+    = "{" whitespace*
+          ( key_value
+            ( whitespace* "," whitespace* key_value )*
+            whitespace* )? "}"
+
+table_array_header      "header of table array"
+    = "[" table_header "]"
+
+table_header            "header of table"
+    = "[" whitespace*
+          key
+          ( whitespace* "." whitespace* key )*
+          whitespace* "]"

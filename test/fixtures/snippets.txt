@@ -1,0 +1,120 @@
+    	# Testing	   comments.  # 
+   "#"   	= {"#" =[
+ 3e3  ,	#
+ ]}["##"."."]  # what?
+
+ ["##"] 
+#
+	3e3 = 2015-12-31T03:21:43#
+-----------------------------%
+'#':
+  '#': [ 3000 ]
+'##':
+  '.': {}
+  '3e3': 2015-12-31T03:21:43Z
+-----------------------------------------------------------%
+str1 = "The quick brown fox jumps over the lazy dog."
+
+str2 = """
+The quick brown \
+
+
+  fox jumps over \
+    the lazy dog."""
+
+key3 = """\
+       The quick brown \
+       fox jumps over \
+       the lazy dog.\
+       """
+-----------------------------%
+str1: The quick brown fox jumps over the lazy dog.
+str2: The quick brown fox jumps over the lazy dog.
+key3: The quick brown fox jumps over the lazy dog.
+-----------------------------------------------------------%
+points = [ { "x" = 1, y = '2', z = 3 },   [
+           { "x" = 7, y = '8', z = 9 },
+           { "x" = 2, y = '4', z = 8 }, ] ]
+-----------------------------%
+points: [ { x: 1, y: "2", z: 3 }
+        , [ { x: 7, y: "8", z: 9 }
+          , { x: 2, y: "4", z: 8 }
+          ]
+        ]
+-----------------------------------------------------------%
+[[fruit]]
+  name = "apple"
+
+  [fruit.physical]
+    color = "red"
+    shape = "round"
+
+  [[fruit.variety]]
+    name = "red delicious"
+
+  [[fruit.variety]]
+    name = "granny smith"
+
+[[fruit]]
+  name = "banana"
+
+  [[fruit.variety]]
+    name = "plantain"
+-----------------------------%
+fruit:
+  - name: apple
+    physical:
+      color: red
+      shape: round
+    variety:
+      - name: red delicious
+      - name: granny smith
+  - name: banana
+    variety:
+      - name: plantain
+-----------------------------------------------------------%
+[x]
+y=1
+k={y = 2, k = 3}
+-----------------------------%
+x:
+  y: 1
+  k:
+    y: 2
+    k: 3
+-----------------------------------------------------------%
+[[a.fruit]]
+  [[a.fruit.shop]]
+[[b.fruit.shop]]
+  [[a.fruit.shop.open]]
+  a=4
+  [[a.fruit.shop.open]]
+  a = 4
+    [a.fruit.shop.open.allday]
+-----------------------------%
+a:
+  fruit:
+    - shop:
+        - open:
+            - a: 4
+            - a: 4
+              allday: {}
+b:
+  fruit:
+    shop: [ {} ]
+-----------------------------------------------------------%
+[k. f]
+ f =false
+[[e]]
+[[e]]
+f={}
+[k.f.g]
+-----------------------------%
+e:
+  - {}
+  - f: {}
+k:
+  f:
+    f: false
+    g: {}
+-----------------------------------------------------------%
