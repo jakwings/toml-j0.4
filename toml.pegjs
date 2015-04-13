@@ -137,7 +137,7 @@
 }
 
 
-expressions             "expressions"
+expressions             //expressions
     = ( whitespace / newline / comment )*
       ( expression
         ( whitespace / comment )*
@@ -146,7 +146,7 @@ expressions             "expressions"
         return g_root;
       }
 
-expression              "expression"
+expression              //expression
     = path:table_array_header
       {
         g_context = findContext(g_root, true, path);
@@ -161,38 +161,38 @@ expression              "expression"
         g_context.table[kv[0]] = kv[1];
       }
 
-newline                 "newline"
+newline                 //newline
     = "\n" / "\r\n"
 
-whitespace              "whitespace"
+whitespace              //whitespace
     = [ \t]
 
-comment                 "comment"
+comment                 //comment
     = "#" ( !newline . )*
 
-key_value               "key-value pair"
+key_value               //key-value pair
     = a_:key whitespace* "=" whitespace* b_:value
       {
         return [a_, b_];
       }
 
-key                     "key"
+key                     //key
     = unquoted_key
     / quoted_key
 
-unquoted_key            "bare key"
+unquoted_key            //bare key
     = [a-zA-Z0-9\-_]+
       {
         return text();
       }
 
-quoted_key              "quoted key"
+quoted_key              //quoted key
     = '"' a_:basic_char+ '"'
       {
         return a_.join('');
       }
 
-value                   "value"
+value                   //value
     = string
     / boolean
     / date_time
@@ -201,29 +201,29 @@ value                   "value"
     / array
     / inline_table
 
-string                  "string"
+string                  //string
     = ml_basic_string
     / basic_string
     / ml_literal_string
     / literal_string
 
-basic_string            "basic string"
+basic_string            //basic string
     = '"' a_:basic_char* '"'
       {
         return a_.join('');
       }
 
-basic_char              "basic character"
+basic_char              //basic character
     = unescaped_char
     / escaped_char
 
-unescaped_char          "normal basic character"
+unescaped_char          //normal basic character
     = !newline [^"\\]
       {
         return text();
       }
 
-escaped_char            "escaped character"
+escaped_char            //escaped character
     = "\\" ["\\bfnrt]
       {
         return unescape(text()[1]);
@@ -237,33 +237,33 @@ escaped_char            "escaped character"
         return fromCodePoint(text().substr(2));
       }
 
-four_hex_digit          "four hexadecimal digits"
+four_hex_digit          //four hexadecimal digits
     = hex_digit hex_digit hex_digit hex_digit
 
-eight_hex_digit         "eight hexadecimal digits"
+eight_hex_digit         //eight hexadecimal digits
     = hex_digit hex_digit hex_digit hex_digit
       hex_digit hex_digit hex_digit hex_digit
 
-hex_digit               "hexadecimal digit"
+hex_digit               //hexadecimal digit
     = [0-9A-Fa-f]
 
-literal_string          "literal string"
+literal_string          //literal string
     = "'" literal_char* "'"
       {
         var s = text();
         return s.substr(1, s.length - 2);
       }
 
-literal_char            "literal character"
+literal_char            //literal character
     = !newline [^']
 
-ml_basic_string         "multi-line basic string"
+ml_basic_string         //multi-line basic string
     = '"""' newline? a_:ml_basic_text* '"""'
       {
         return a_.join('').replace(/\\\r?\n(?:\r?\n|[ \t])*/g, '');
       }
 
-ml_basic_text           "multi-line basic text"
+ml_basic_text           //multi-line basic text
     = ml_basic_char
     / "\\" newline
       {
@@ -271,33 +271,33 @@ ml_basic_text           "multi-line basic text"
       }
     / newline
 
-ml_basic_char           "multi-line basic character"
+ml_basic_char           //multi-line basic character
     = !'"""' ml_unescaped_char
       {
         return text();
       }
     / escaped_char
 
-ml_unescaped_char       "multi-line normal basic character"
+ml_unescaped_char       //multi-line normal basic character
     = !newline [^\\]
 
-ml_literal_string       "multi-line literal string"
+ml_literal_string       //multi-line literal string
     = "'''" newline? a_:ml_literal_text* "'''"
       {
         return a_.join('');
       }
 
-ml_literal_text         "multi-line literal text"
+ml_literal_text         //multi-line literal text
     = !"'''" ml_literal_char
       {
         return text();
       }
     / newline
 
-ml_literal_char         "multi-line literal character"
+ml_literal_char         //multi-line literal character
     = !newline .
 
-boolean                 "boolean value"
+boolean                 //boolean value
     = "true"
       {
         return true;
@@ -307,7 +307,7 @@ boolean                 "boolean value"
         return false;
       }
 
-float                   "floating-point number"
+float                   //floating-point number
     = integer ( fraction exponent? / exponent )
       {
         // A double-precision 64-bit floating-point number in IEEE 754 standard.
@@ -319,13 +319,13 @@ float                   "floating-point number"
         return number;
       }
 
-fraction                "fractional part of floating-point number"
+fraction                //fractional part of floating-point number
     = "." digit ( "_"? digit )*
 
-exponent                "exponent"
+exponent                //exponent
     = ( "e" / "E" ) integer
 
-integer                 "integer"
+integer                 //integer
     = sign? int_digits
       {
         // Be careful of JavaScript limits:
@@ -361,21 +361,21 @@ integer                 "integer"
         return number;
       }
 
-sign                    "plus/minus sign"
+sign                    //plus/minus sign
     = "+"
     / "-"
 
-int_digits              "digits of integer"
+int_digits              //digits of integer
     = digit_1to9 ( "_"? digit )+
     / digit
 
-digit_1to9              "digit from 1 to 9"
+digit_1to9              //digit from 1 to 9
     = [1-9]
 
-digit                   "decimal digit"
+digit                   //decimal digit
     = [0-9]
 
-date_time               "date-time"  // RFC 3339
+date_time               //date-time (RFC 3339
     = full_date "T" full_time
       {
         var s = text();
@@ -386,41 +386,41 @@ date_time               "date-time"  // RFC 3339
         return date;
       }
 
-full_date               "full date"
+full_date               //full date
     = year "-" month "-" mday
 
-year                    "full year (XXXX)"
+year                    //full year (XXXX)
     = digit digit digit digit
 
-month                   "month (XX)"
+month                   //month (XX)
     = digit digit
 
-mday                    "day of month (XX)"
+mday                    //day of month (XX)
     = digit digit
 
-full_time               "full time (HH:MM:SS[offset])"
+full_time               //full time (HH:MM:SS[offset])
     = time time_offset?
 
-time                    "time (HH:MM:SS[fraction])"
+time                    //time (HH:MM:SS[fraction])
     = hour ":" minute ":" second second_fraction?
 
-hour                    "hour (HH)"
+hour                    //hour (HH)
     = digit digit
 
-minute                  "minute (MM)"
+minute                  //minute (MM)
     = digit digit
 
-second                  "second (SS)"
+second                  //second (SS)
     = digit digit
 
-second_fraction         "fractional part of second"
+second_fraction         //fractional part of second
     = "." digit+
 
-time_offset             "offset of time"
+time_offset             //offset of time
     = "Z"
     / sign hour ":" minute
 
-array                   "array"
+array                   //array
     = "[" array_space*
           a_:( array_value
                array_space*
@@ -429,7 +429,7 @@ array                   "array"
         return a_ ? a_[0] : [];
       }
 
-array_value             "array value"
+array_value             //array value
     = a_:value b_:( array_space* "," array_space* array_value )?
       {
         var array = [a_];
@@ -450,7 +450,7 @@ array_space
     / newline
     / comment
 
-inline_table            "inline table"
+inline_table            //inline table
     = "{" whitespace*
           a_:( key_value
                ( whitespace* "," whitespace* key_value )*
@@ -468,13 +468,13 @@ inline_table            "inline table"
         return table;
       }
 
-table_array_header      "header of table array"
+table_array_header      //header of table array
     = "[" path:table_header "]"
     {
       return path;
     }
 
-table_header            "header of table"
+table_header            //header of table
     = "[" whitespace*
           a_:key
           b_:( whitespace* "." whitespace* key )*
