@@ -135,7 +135,10 @@
 
 
 expressions             "expressions"
-    = spacing* ( expression spacing* expressions? )?
+    = ( whitespace / newline / comment )*
+      ( expression
+        ( whitespace / comment )*
+        ( newline+ expressions )? )?
       {
         return g_root;
       }
@@ -154,11 +157,6 @@ expression              "expression"
         checkTableKey(g_context.table, kv[0]);
         g_context.table[kv[0]] = kv[1];
       }
-
-spacing
-    = whitespace
-    / newline
-    / comment
 
 newline                 "newline"
     = "\n" / "\r\n"
@@ -419,16 +417,16 @@ time_offset             "offset of time"
     / sign hour ":" minute
 
 array                   "array"
-    = "[" spacing*
+    = "[" array_space*
           a_:( array_value
-               spacing*
-               ( "," spacing* )? )? "]"
+               array_space*
+               ( "," array_space* )? )? "]"
       {
         return a_ ? a_[0] : [];
       }
 
 array_value             "array value"
-    = a_:value b_:( spacing* "," spacing* array_value )?
+    = a_:value b_:( array_space* "," array_space* array_value )?
       {
         var array = [a_];
         if (b_) {
@@ -442,6 +440,11 @@ array_value             "array value"
         }
         return array;
       }
+
+array_space
+    = whitespace
+    / newline
+    / comment
 
 inline_table            "inline table"
     = "{" whitespace*

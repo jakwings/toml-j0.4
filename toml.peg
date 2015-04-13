@@ -1,15 +1,13 @@
 expressions             "expressions"
-    = spacing* ( expression spacing* expressions? )?
+    = ( whitespace / newline / comment )*
+      ( expression
+        ( whitespace / comment )*
+        ( newline+ expressions )? )?
 
 expression              "expression"
     = table_array_header
     / table_header
     / key_value
-
-spacing
-    = whitespace
-    / newline
-    / comment
 
 newline                 "newline"
     = "\n" / "\r\n"
@@ -171,13 +169,18 @@ time_offset             "offset of time"
     / sign hour ":" minute
 
 array                   "array"
-    = "[" spacing*
+    = "[" array_space*
           ( array_value
-            spacing*
-            ( "," spacing* )? )? "]"
+            array_space*
+            ( "," array_space* )? )? "]"
 
 array_value             "array value"
-    = value ( spacing* "," spacing* array_value )?
+    = value ( array_space* "," array_space* array_value )?
+
+array_space
+    = whitespace
+    / newline
+    / comment
 
 inline_table            "inline table"
     = "{" whitespace*
