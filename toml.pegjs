@@ -1,4 +1,7 @@
 {
+  function genMsgRedefined(key) {
+    return ('Value for ' + key + ' should not be redefined in the same table.');
+  }
   function isFinite(n) {
     return Number.isFinite ? Number.isFinite(n) :
         (typeof n === 'number' && isFinite(n));
@@ -55,7 +58,7 @@
   function checkTableKey(table, k) {
     // TODO: Track the key path.
     if (hasOwnProperty(table, k)) {
-      error('Key ' + stringify(k) + ' should not be defined twice in the same table.');
+      error(genMsgRedefined(stringify(k)));
     }
   }
   function findContext(table, isTableArray, path) {
@@ -77,7 +80,7 @@
         if (isTableArray) {
           if (isArray(table[k])) {
             if (!g_table_arrays[s]) {
-              error('Key ' + s + ' should not be defined twice.');
+              error(genMsgRedefined(s));
             }
             if (i + 1 === l) {
               var t = {};
@@ -88,19 +91,19 @@
             }
           } else {
             if (!g_tables[s]) {
-              error('Key ' + s + ' should not be defined twice.');
+              error(genMsgRedefined(s));
             }
             table = table[k];
           }
         } else {
           if (isArray(table[k])) {
             if (!g_table_arrays[s]) {
-              error('Key ' + s + ' should not be defined twice.');
+              error(genMsgRedefined(s));
             }
             table = table[k][table[k].length-1];
           } else {
             if (!g_tables[s]) {
-              error('Key ' + s + ' should not be defined twice.');
+              error(genMsgRedefined(s));
             }
             table = table[k];
           }
@@ -109,11 +112,11 @@
     }
     if (isTableArray) {
       if (!g_table_arrays[s]) {
-        error('Key ' + s + ' should not be defined twice.');
+        error(genMsgRedefined(s));
       }
     } else {
       if (g_defined_tables[s] || g_table_arrays[s]) {
-        error('Key ' + s + ' should not be defined twice.');
+        error(genMsgRedefined(s));
       }
       g_defined_tables[s] = true;
     }
