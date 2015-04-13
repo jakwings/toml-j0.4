@@ -94,6 +94,7 @@ describe('Simple key-value pairs', function () {
     , ['"a\\u0022b"', 'a"b']
     , ['"a\\U00000022b"', 'a"b']
     , ['"a\\U0001F600b"', 'a😀b']
+    , ['"a\\U0001f600b"', 'a😀b']
     ].forEach(function (a, i) {
       var key = 'basic-str_' + (i + 1);
       var title = stringify(key) + ' =\t' + a[0] + ' => ' + stringify(a[1]);
@@ -119,6 +120,7 @@ describe('Simple key-value pairs', function () {
     , ["'a\\u0022b'", 'a\\u0022b']
     , ["'a\\U00000022b'", 'a\\U00000022b']
     , ["'a\\U0001F600b'", 'a\\U0001F600b']
+    , ["'a\\U0001f600b'", 'a\\U0001f600b']
     ].forEach(function (a, i) {
       var key = 'literal-str_' + (i + 1);
       var title = key + ' =\t' + a[0] + ' => ' + stringify(a[1]);
@@ -142,6 +144,7 @@ describe('Simple key-value pairs', function () {
     , ['"""a\n \n\n\\u0022b"""', 'a\n \n\n"b']
     , ['"""a\n \n\n\\U00000022b"""', 'a\n \n\n"b']
     , ['"""a\n \n\n\\U0001F600b"""', 'a\n \n\n😀b']
+    , ['"""a\n \n\n\\U0001f600b"""', 'a\n \n\n😀b']
     , ['"""\na\n \n\nb"""', 'a\n \n\nb']
     , ['"""\n\na\n \n\nb"""', '\na\n \n\nb']
     , ['"""a\n \n\nb\n"""', 'a\n \n\nb\n']
@@ -170,6 +173,7 @@ describe('Simple key-value pairs', function () {
     , ["'''a\n \n\n\\u0022b'''", 'a\n \n\n\\u0022b']
     , ["'''a\n \n\n\\U00000022b'''", 'a\n \n\n\\U00000022b']
     , ["'''a\n \n\n\\U0001F600b'''", 'a\n \n\n\\U0001F600b']
+    , ["'''a\n \n\n\\U0001f600b'''", 'a\n \n\n\\U0001f600b']
     , ["'''\na\n \n\nb'''", 'a\n \n\nb']
     , ["'''\n\na\n \n\nb'''", '\na\n \n\nb']
     , ["'''a\n \n\nb\n'''", 'a\n \n\nb\n']
