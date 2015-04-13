@@ -65,10 +65,11 @@ four_hex_digit          "four hexadecimal digits"
     = hex_digit hex_digit hex_digit hex_digit
 
 eight_hex_digit         "eight hexadecimal digits"
-    = hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit
+    = hex_digit hex_digit hex_digit hex_digit
+      hex_digit hex_digit hex_digit hex_digit
 
 hex_digit               "hexadecimal digit"
-    = [0-9A-F]
+    = [0-9A-Fa-f]
 
 literal_string          "literal string"
     = "'" literal_char* "'"
