@@ -112,7 +112,7 @@
         error('Key ' + s + ' should not be defined twice.');
       }
     } else {
-      if (g_defined_tables[s]) {
+      if (g_defined_tables[s] || g_table_arrays[s]) {
         error('Key ' + s + ' should not be defined twice.');
       }
       g_defined_tables[s] = true;
