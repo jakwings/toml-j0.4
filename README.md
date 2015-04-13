@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/jakwings/toml-j0.4.svg)](https://travis-ci.org/jakwings/toml-j0.4)
 [![NPM version](https://badge.fury.io/js/toml-j0.4.svg)](http://badge.fury.io/js/toml-j0.4)
 
-This is a [TOML v[0.4.0] compliant parser built with [PEG.js].
+This is a [TOML] v[0.4.0] compliant parser built with [PEG.js].
 
 [TOML]: https://github.com/toml-lang/toml
 [0.4.0]: https://github.com/toml-lang/toml/blob/master/versions/en/toml-v0.4.0.md
