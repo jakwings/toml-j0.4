@@ -71,7 +71,7 @@ describe('No data', function () {
   ].forEach(function (a, i) {
     var key = 'empty_' + (i + 1);
     var data = parse(a);
-    it(key + ': ' + replaceNL(a) + ' => {}', function () {
+    it(key + ': "' + replaceNL(a) + '" => {}', function () {
       checkObject(data);
       should(data).have.keys();  // no keys
     });
