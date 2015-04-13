@@ -42,6 +42,25 @@ try {
 There is no other API for now. Simple?
 
 
+### Contribute
+
+If you find bugs, welcome to send me a pull request with (only) updated test
+scripts/fixtures!
+
+The scripts `lib/parser.js` and `dist/toml-browser.js` are generated with this
+command:
+
+```bash
+npm run build
+```
+
+Then you can test them with this command:
+
+```bash
+npm test
+```
+
+
 ### Others
 
 This module is also used by other projects:
