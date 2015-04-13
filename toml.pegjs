@@ -138,7 +138,7 @@ expressions             "expressions"
     = ( whitespace / newline / comment )*
       ( expression
         ( whitespace / comment )*
-        ( newline+ expressions )? )?
+        ( newline expressions )? )?
       {
         return g_root;
       }

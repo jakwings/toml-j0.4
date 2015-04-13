@@ -2,7 +2,7 @@ expressions             "expressions"
     = ( whitespace / newline / comment )*
       ( expression
         ( whitespace / comment )*
-        ( newline+ expressions )? )?
+        ( newline expressions )? )?
 
 expression              "expression"
     = table_array_header
