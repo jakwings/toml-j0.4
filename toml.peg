@@ -1,199 +1,219 @@
-expressions             //expressions
-    = ( whitespace / newline / comment )*
-      ( expression
-        ( whitespace / comment )*
-        ( newline expressions )? )?
+Expressions
+    = ( Whitespace / Newline / Comment )*
+      ( Expression
+        ( Whitespace / Comment )*
+        ( Newline Expressions )? )?
 
-expression              //expression
-    = table_array_header
-    / table_header
-    / key_value
+Expression
+    = TableArrayHeader
+    / TableHeader
+    / KeyValue
 
-newline                 //newline
+Newline                                         "Newline"
     = "\n" / "\r\n"
 
-whitespace              //whitespace
+Whitespace                                      "Whitespace"
     = [ \t]
 
-comment                 //comment
-    = "#" ( !newline . )*
+Comment                                         "Comment"
+    = "#" ( !Newline . )*
 
-key_value               //key-value pair
-    = key whitespace* "=" whitespace* value
+KeyValue
+    = Key Whitespace* "=" Whitespace* Value
 
-key                     //key
-    = unquoted_key
-    / quoted_key
+Key
+    = BareKey
+    / QuotedKey
 
-unquoted_key            //bare key
+BareKey
     = [a-zA-Z0-9\-_]+
 
-quoted_key              //quoted key
-    = '"' basic_char+ '"'
+QuotedKey
+    = DoubleQuote BasicCharacter+ DoubleQuote
 
-value                   //value
-    = string
-    / boolean
-    / date_time
-    / float
-    / integer
-    / array
-    / inline_table
+DoubleQuote                                     "DoubleQuote"
+    = '"'
 
-string                  //string
-    = ml_basic_string
-    / basic_string
-    / ml_literal_string
-    / literal_string
+SingleQuote                                     "SingleQuote"
+    = "'"
 
-basic_string            //basic string
-    = '"' basic_char* '"'
+ThreeDoubleQuotes                               "ThreeDoubleQuotes"
+    = '"""'
 
-basic_char              //basic character
-    = unescaped_char
-    / escaped_char
+ThreeSingleQuotes                               "ThreeSingleQuotes"
+    = "'''"
 
-unescaped_char          //normal basic character
-    = !newline [^"\\]
+Value
+    = String
+    / Boolean
+    / DateTime
+    / Float
+    / Integer
+    / Array
+    / InlineTable
 
-escaped_char            //escaped character
-    = "\\" ["\\bfnrt]
-    / "\\u" four_hex_digit
-    / "\\U" eight_hex_digit
+String
+    = MultilineBasicString
+    / BasicString
+    / MultilineLiteralString
+    / LiteralString
 
-four_hex_digit          //four hexadecimal digits
-    = hex_digit hex_digit hex_digit hex_digit
+BasicString
+    = DoubleQuote BasicCharacter* DoubleQuote
 
-eight_hex_digit         //eight hexadecimal digits
-    = hex_digit hex_digit hex_digit hex_digit
-      hex_digit hex_digit hex_digit hex_digit
+BasicCharacter
+    = NormalCharacter
+    / EscapedCharacter
 
-hex_digit               //hexadecimal digit
+NormalCharacter                                 "NormalCharacter"
+    = !Newline [^"\\]
+
+EscapedCharacter
+    = Backslash ( ControlCharacter
+                / DoubleQuote
+                / Backslash
+                / "u" FourHexadecimalDigits
+                / "U" EightHexadecimalDigits )
+
+ControlCharacter                                '"b", "f", "n", "r", "t"'
+    = [bfnrt]
+
+Backslash                                       "Backslash"
+    = "\\"
+
+FourHexadecimalDigits                           "FourHexadecimalDigits"
+    = HexDigit HexDigit HexDigit HexDigit
+
+EightHexadecimalDigits                          "EightHexadecimalDigits"
+    = HexDigit HexDigit HexDigit HexDigit
+      HexDigit HexDigit HexDigit HexDigit
+
+HexDigit
     = [0-9A-Fa-f]
 
-literal_string          //literal string
-    = "'" literal_char* "'"
+LiteralString
+    = SingleQuote LiteralCharacter* SingleQuote
 
-literal_char            //literal character
-    = !newline [^']
+LiteralCharacter                                "NonSingleQuoteCharacter"
+    = !Newline [^']
 
-ml_basic_string         //multi-line basic string
-    = '"""' newline? ml_basic_text* '"""'
+MultilineBasicString
+    = ThreeDoubleQuotes Newline? MultilineBasicText* ThreeDoubleQuotes
 
-ml_basic_text           //multi-line basic text
-    = ml_basic_char
-    / "\\" newline
-    / newline
+MultilineBasicText
+    = MultilineBasicCharacter
+    / Backslash Newline
+    / Newline
 
-ml_basic_char           //multi-line basic character
-    = !'"""' ml_unescaped_char
-    / escaped_char
+MultilineBasicCharacter
+    = !ThreeDoubleQuotes MultilineNormalCharacter
+    / EscapedCharacter
 
-ml_unescaped_char       //multi-line normal basic character
-    = !newline [^\\]
+MultilineNormalCharacter                        "NormalCharacter"
+    = !Newline [^\\]
 
-ml_literal_string       //multi-line literal string
-    = "'''" newline? ml_literal_text* "'''"
+MultilineLiteralString
+    = ThreeSingleQuotes Newline? MultilineLiteralText* ThreeSingleQuotes
 
-ml_literal_text         //multi-line literal text
-    = !"'''" ml_literal_char
-    / newline
+MultilineLiteralText
+    = !"'''" MultilineLiteralCharacter
+    / Newline
 
-ml_literal_char         //multi-line literal character
-    = !newline .
+MultilineLiteralCharacter                       "AnyCharacter"
+    = !Newline .
 
-boolean                 //boolean value
+Boolean
     = "true"
     / "false"
 
-float                   //decimal
-    = integer ( fraction exponent? / exponent )
+Float
+    = Integer ( Fraction Exponent? / Exponent )
 
-fraction                //fractional part of decimal
-    = "." digit ( "_"? digit )*
+Fraction
+    = "." Digit ( "_"? Digit )*
 
-exponent                //exponent
-    = ( "e" / "E" ) integer
+Exponent
+    = ( "e" / "E" ) Integer
 
-integer                 //integer
-    = sign? int_digits
+Integer
+    = Sign? IntDigits
 
-sign                    //plus/minus sign
+Sign
     = "+"
     / "-"
 
-int_digits              //digits of integer
-    = digit_1to9 ( "_"? digit )+
-    / digit
+IntDigits
+    = Digit_1to9 ( "_"? Digit )+
+    / Digit
 
-digit_1to9              //digit from 1 to 9
+Digit_1to9
     = [1-9]
 
-digit                   //decimal digit
+Digit
     = [0-9]
 
-date_time               //date-time (RFC 3339)
-    = full_date "T" full_time
+DateTime
+    = FullDate "T" FullTime
 
-full_date               //full date
-    = year "-" month "-" mday
+FullDate                                        "FullDate (YYYY-mm-dd)"
+    = Year "-" Month "-" MDay
 
-year                    //full year (XXXX)
-    = digit digit digit digit
+Year
+    = Digit Digit Digit Digit
 
-month                   //month (XX)
-    = digit digit
+Month
+    = Digit Digit
 
-mday                    //day of month (XX)
-    = digit digit
+MDay
+    = Digit Digit
 
-full_time               //full time (HH:MM:SS[offset])
-    = time time_offset?
+FullTime
+    = Time TimeOffset?
 
-time                    //time (HH:MM:SS[fraction])
-    = hour ":" minute ":" second second_fraction?
+Time                                            "Time (HH:MM:SS[.sss])"
+    = Hour ":" Minute ":" Second SecondFraction?
 
-hour                    //hour (HH)
-    = digit digit
+Hour
+    = Digit Digit
 
-minute                  //minute (MM)
-    = digit digit
+Minute
+    = Digit Digit
 
-second                  //second (SS)
-    = digit digit
+Second
+    = Digit Digit
 
-second_fraction         //fractional part of second
-    = "." digit+
+SecondFraction
+    = "." Digit+
 
-time_offset             //offset of time
+TimeOffset                                      "TimeOffset (Z or +/-HH:MM)"
     = "Z"
-    / sign hour ":" minute
+    / Sign Hour ":" Minute
 
-array                   //array
-    = "[" array_space*
-          ( array_value
-            array_space*
-            ( "," array_space* )? )? "]"
+Array
+    = "[" ArraySpace*
+          ( ArrayValue
+            ArraySpace*
+            ( "," ArraySpace* )? )? "]"
 
-array_value             //array value
-    = value ( array_space* "," array_space* array_value )?
+ArrayValue
+    = Value ( ArraySpace* "," ArraySpace* ArrayValue )?
 
-array_space
-    = whitespace
-    / newline
-    / comment
+ArraySpace
+    = Whitespace
+    / Newline
+    / Comment
 
-inline_table            //inline table
-    = "{" whitespace*
-          ( key_value
-            ( whitespace* "," whitespace* key_value )*
-            whitespace* )? "}"
+InlineTable
+    = "{" Whitespace*
+          ( KeyValue
+            ( Whitespace* "," Whitespace* KeyValue )*
+            Whitespace* )? "}"
 
-table_array_header      //header of table array
-    = "[" table_header "]"
+TableArrayHeader
+    = "[" TableHeader "]"
 
-table_header            //header of table
-    = "[" whitespace*
-          key
-          ( whitespace* "." whitespace* key )*
-          whitespace* "]"
+TableHeader
+    = "[" Whitespace*
+          Key
+          ( Whitespace* "." Whitespace* Key )*
+          Whitespace* "]"

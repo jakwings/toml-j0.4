@@ -137,196 +137,215 @@
 }
 
 
-expressions             //expressions
-    = ( whitespace / newline / comment )*
-      ( expression
-        ( whitespace / comment )*
-        ( newline expressions )? )?
+Expressions
+    = ( Whitespace / Newline / Comment )*
+      ( Expression
+        ( Whitespace / Comment )*
+        ( Newline Expressions )? )?
       {
         return g_root;
       }
 
-expression              //expression
-    = path:table_array_header
+Expression
+    = path:TableArrayHeader
       {
         g_context = findContext(g_root, true, path);
       }
-    / path:table_header
+    / path:TableHeader
       {
         g_context = findContext(g_root, false, path);
       }
-    / kv:key_value
+    / keyValue:KeyValue
       {
-        checkTableKey(g_context.table, kv[0]);
-        g_context.table[kv[0]] = kv[1];
+        checkTableKey(g_context.table, keyValue[0]);
+        g_context.table[keyValue[0]] = keyValue[1];
       }
 
-newline                 //newline
-    = "\n" / "\r\n"
+Newline                                         "Newline"
+    = "\n"
+    / "\r\n"
 
-whitespace              //whitespace
+Whitespace                                      "Whitespace"
     = [ \t]
 
-comment                 //comment
-    = "#" ( !newline . )*
+Comment                                         "Comment"
+    = "#" ( !Newline . )*
 
-key_value               //key-value pair
-    = a_:key whitespace* "=" whitespace* b_:value
+KeyValue
+    = key:Key Whitespace* "=" Whitespace* value:Value
       {
-        return [a_, b_.value];
+        return [key, value.value];
       }
 
-key                     //key
-    = unquoted_key
-    / quoted_key
+Key
+    = BareKey
+    / QuotedKey
 
-unquoted_key            //bare key
+BareKey
     = [a-zA-Z0-9\-_]+
       {
         return text();
       }
 
-quoted_key              //quoted key
-    = '"' a_:basic_char+ '"'
+QuotedKey
+    = DoubleQuote chars:BasicCharacter+ DoubleQuote
       {
-        return a_.join('');
+        return chars.join('');
       }
 
-value                   //value
-    = string
-    / boolean
-    / date_time
-    / float
-    / integer
-    / array
-    / inline_table
+DoubleQuote                                     "DoubleQuote"
+    = '"'
 
-string                  //string
-    = ml_basic_string
-    / basic_string
-    / ml_literal_string
-    / literal_string
+SingleQuote                                     "SingleQuote"
+    = "'"
 
-basic_string            //basic string
-    = '"' a_:basic_char* '"'
+ThreeDoubleQuotes                               "ThreeDoubleQuotes"
+    = '"""'
+
+ThreeSingleQuotes                               "ThreeSingleQuotes"
+    = "'''"
+
+Value
+    = String
+    / Boolean
+    / DateTime
+    / Float
+    / Integer
+    / Array
+    / InlineTable
+
+String
+    = MultilineBasicString
+    / BasicString
+    / MultilineLiteralString
+    / LiteralString
+
+BasicString
+    = DoubleQuote chars:BasicCharacter* DoubleQuote
       {
         return {
-          type: 'string',
-          value: a_.join('')
+          type: 'String',
+          value: chars.join('')
         };
       }
 
-basic_char              //basic character
-    = unescaped_char
-    / escaped_char
+BasicCharacter
+    = NormalCharacter
+    / EscapedCharacter
 
-unescaped_char          //normal basic character
-    = !newline [^"\\]
+NormalCharacter                                 "NormalCharacter"
+    = !Newline [^"\\]
       {
         return text();
       }
 
-escaped_char            //escaped character
-    = "\\" ["\\bfnrt]
+EscapedCharacter
+    = Backslash ( ControlCharacter
+                / DoubleQuote
+                / Backslash
+                / "u" FourHexadecimalDigits
+                / "U" EightHexadecimalDigits )
       {
-        return unescape(text()[1]);
-      }
-    / "\\u" four_hex_digit
-      {
-        return fromCodePoint(text().substr(2));
-      }
-    / "\\U" eight_hex_digit
-      {
-        return fromCodePoint(text().substr(2));
+        var s = text();
+        if (s.length <= 2) {
+          return unescape(s[1]);
+        }
+        return fromCodePoint(s.substr(2));
       }
 
-four_hex_digit          //four hexadecimal digits
-    = hex_digit hex_digit hex_digit hex_digit
+ControlCharacter                                '"b", "f", "n", "r", "t"'
+    = [bfnrt]
 
-eight_hex_digit         //eight hexadecimal digits
-    = hex_digit hex_digit hex_digit hex_digit
-      hex_digit hex_digit hex_digit hex_digit
+Backslash                                       "Backslash"
+    = "\\"
 
-hex_digit               //hexadecimal digit
+FourHexadecimalDigits                           "FourHexadecimalDigits"
+    = HexDigit HexDigit HexDigit HexDigit
+
+EightHexadecimalDigits                          "EightHexadecimalDigits"
+    = HexDigit HexDigit HexDigit HexDigit
+      HexDigit HexDigit HexDigit HexDigit
+
+HexDigit
     = [0-9A-Fa-f]
 
-literal_string          //literal string
-    = "'" literal_char* "'"
+LiteralString
+    = SingleQuote LiteralCharacter* SingleQuote
       {
         var s = text();
         return {
-          type: 'string',
+          type: 'String',
           value: s.substr(1, s.length - 2)
         };
       }
 
-literal_char            //literal character
-    = !newline [^']
+LiteralCharacter                                "NonSingleQuoteCharacter"
+    = !Newline [^']
 
-ml_basic_string         //multi-line basic string
-    = '"""' newline? a_:ml_basic_text* '"""'
+MultilineBasicString
+    = ThreeDoubleQuotes Newline? chars:MultilineBasicText* ThreeDoubleQuotes
       {
         return {
-          type: 'string',
-          value: a_.join('').replace(/\\\r?\n(?:\r?\n|[ \t])*/g, '')
+          type: 'String',
+          value: chars.join('').replace(/\\\r?\n(?:\r?\n|[ \t])*/g, '')
         };
       }
 
-ml_basic_text           //multi-line basic text
-    = ml_basic_char
-    / "\\" newline
+MultilineBasicText
+    = MultilineBasicCharacter
+    / Backslash Newline
       {
         return text();
       }
-    / newline
+    / Newline
 
-ml_basic_char           //multi-line basic character
-    = !'"""' ml_unescaped_char
+MultilineBasicCharacter
+    = !ThreeDoubleQuotes MultilineNormalCharacter
       {
         return text();
       }
-    / escaped_char
+    / EscapedCharacter
 
-ml_unescaped_char       //multi-line normal basic character
-    = !newline [^\\]
+MultilineNormalCharacter                        "NormalCharacter"
+    = !Newline [^\\]
 
-ml_literal_string       //multi-line literal string
-    = "'''" newline? a_:ml_literal_text* "'''"
+MultilineLiteralString
+    = ThreeSingleQuotes Newline? chars:MultilineLiteralText* ThreeSingleQuotes
       {
         return {
-          type: 'string',
-          value: a_.join('')
+          type: 'String',
+          value: chars.join('')
         };
       }
 
-ml_literal_text         //multi-line literal text
-    = !"'''" ml_literal_char
+MultilineLiteralText
+    = !"'''" MultilineLiteralCharacter
       {
         return text();
       }
-    / newline
+    / Newline
 
-ml_literal_char         //multi-line literal character
-    = !newline .
+MultilineLiteralCharacter                       "AnyCharacter"
+    = !Newline .
 
-boolean                 //boolean value
+Boolean
     = "true"
       {
         return {
-          type: 'boolean',
+          type: 'Boolean',
           value: true
         };
       }
     / "false"
       {
         return {
-          type: 'boolean',
+          type: 'Boolean',
           value: false
         };
       }
 
-float                   //floating-point number
-    = integer ( fraction exponent? / exponent )
+Float
+    = Integer ( Fraction Exponent? / Exponent )
       {
         // A double-precision 64-bit floating-point number in IEEE 754 standard.
         var s = text();
@@ -335,19 +354,19 @@ float                   //floating-point number
           error(s + 'is not a 64-bit floating-point number.');
         }
         return {
-          type: 'float',
+          type: 'Float',
           value: number
         };
       }
 
-fraction                //fractional part of floating-point number
-    = "." digit ( "_"? digit )*
+Fraction
+    = "." Digit ( "_"? Digit )*
 
-exponent                //exponent
-    = ( "e" / "E" ) integer
+Exponent
+    = ( "e" / "E" ) Integer
 
-integer                 //integer
-    = sign? int_digits
+Integer
+    = Sign? IntDigits
       {
         // Be careful of JavaScript limits:
         // 1) Number.MAX_SAFE_INTEGER = 9007199254740991
@@ -380,27 +399,27 @@ integer                 //integer
           error(s + ' is not a 64-bit signed integer.');
         }
         return {
-          type: 'integer',
+          type: 'Integer',
           value: number
         };
       }
 
-sign                    //plus/minus sign
+Sign
     = "+"
     / "-"
 
-int_digits              //digits of integer
-    = digit_1to9 ( "_"? digit )+
-    / digit
+IntDigits
+    = Digit_1to9 ( "_"? Digit )+
+    / Digit
 
-digit_1to9              //digit from 1 to 9
+Digit_1to9
     = [1-9]
 
-digit                   //decimal digit
+Digit
     = [0-9]
 
-date_time               //date-time (RFC 3339
-    = full_date "T" full_time
+DateTime
+    = FullDate "T" FullTime
       {
         var s = text();
         var date = new Date(s);
@@ -408,54 +427,54 @@ date_time               //date-time (RFC 3339
           error('Date-time ' + s + ' does not conform to RFC 3339.');
         }
         return {
-          type: 'date-time',
+          type: 'DateTime',
           value: date
         };
       }
 
-full_date               //full date
-    = year "-" month "-" mday
+FullDate                                        "FullDate (YYYY-mm-dd)"
+    = Year "-" Month "-" MDay
 
-year                    //full year (XXXX)
-    = digit digit digit digit
+Year
+    = Digit Digit Digit Digit
 
-month                   //month (XX)
-    = digit digit
+Month
+    = Digit Digit
 
-mday                    //day of month (XX)
-    = digit digit
+MDay
+    = Digit Digit
 
-full_time               //full time (HH:MM:SS[offset])
-    = time time_offset?
+FullTime
+    = Time TimeOffset?
 
-time                    //time (HH:MM:SS[fraction])
-    = hour ":" minute ":" second second_fraction?
+Time                                            "Time (HH:MM:SS[.sss])"
+    = Hour ":" Minute ":" Second SecondFraction?
 
-hour                    //hour (HH)
-    = digit digit
+Hour
+    = Digit Digit
 
-minute                  //minute (MM)
-    = digit digit
+Minute
+    = Digit Digit
 
-second                  //second (SS)
-    = digit digit
+Second
+    = Digit Digit
 
-second_fraction         //fractional part of second
-    = "." digit+
+SecondFraction
+    = "." Digit+
 
-time_offset             //offset of time
+TimeOffset                                      "TimeOffset (Z or +/-HH:MM)"
     = "Z"
-    / sign hour ":" minute
+    / Sign Hour ":" Minute
 
-array                   //array
-    = "[" array_space*
-          a_:( array_value
-               array_space*
-               ( "," array_space* )? )? "]"
+Array
+    = "[" ArraySpace*
+          values:( ArrayValue
+                   ArraySpace*
+                   ( "," ArraySpace* )? )? "]"
       {
         var o = {
-          type: 'array',
-          value: a_ ? a_[0] : []
+          type: 'Array',
+          value: values ? values[0] : []
         };
         for (var i = 0, arr = o.value, l = arr.length; i < l; i++) {
           arr[i] = arr[i].value;
@@ -463,13 +482,13 @@ array                   //array
         return o;
       }
 
-array_value             //array value
-    = a_:value b_:( array_space* "," array_space* array_value )?
+ArrayValue
+    = value:Value opt:( ArraySpace* "," ArraySpace* ArrayValue )?
       {
-        var array = [a_];
-        if (b_) {
-          var type = a_.type;
-          for (var i = 0, arr = b_[3], l = arr.length; i < l; i++) {
+        var array = [value];
+        if (opt) {
+          var type = value.type;
+          for (var i = 0, arr = opt[3], l = arr.length; i < l; i++) {
             if (type !== arr[i].type) {
               error(stringify(arr[i].value) + ' should be of type "' + type +
                   '".');
@@ -480,47 +499,47 @@ array_value             //array value
         return array;
       }
 
-array_space
-    = whitespace
-    / newline
-    / comment
+ArraySpace
+    = Whitespace
+    / Newline
+    / Comment
 
-inline_table            //inline table
-    = "{" whitespace*
-          a_:( key_value
-               ( whitespace* "," whitespace* key_value )*
-               whitespace* )? "}"
+InlineTable
+    = "{" Whitespace*
+          opt:( KeyValue
+                ( Whitespace* "," Whitespace* KeyValue )*
+                Whitespace* )? "}"
       {
         var table = {};
-        if (a_) {
-          table[a_[0][0]] = a_[0][1];
-          for (var i = 0, arr = a_[1], l = arr.length; i < l; i++) {
+        if (opt) {
+          table[opt[0][0]] = opt[0][1];
+          for (var i = 0, arr = opt[1], l = arr.length; i < l; i++) {
             var kv = arr[i][3];
             checkTableKey(table, kv[0]);
             table[kv[0]] = kv[1];
           }
         }
         return {
-          type: 'inline-table',
+          type: 'InlineTable',
           value: table
         };
       }
 
-table_array_header      //header of table array
-    = "[" path:table_header "]"
+TableArrayHeader
+    = "[" path:TableHeader "]"
     {
       return path;
     }
 
-table_header            //header of table
-    = "[" whitespace*
-          a_:key
-          b_:( whitespace* "." whitespace* key )*
-          whitespace* "]"
+TableHeader
+    = "[" Whitespace*
+          key:Key
+          arr:( Whitespace* "." Whitespace* Key )*
+          Whitespace* "]"
       {
-        var path = [a_];
-        for (var i = 0, l = b_.length; i < l; i++) {
-          path.push(b_[i][3]);
+        var path = [key];
+        for (var i = 0, l = arr.length; i < l; i++) {
+          path.push(arr[i][3]);
         }
         return path;
       }
