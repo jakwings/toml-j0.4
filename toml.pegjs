@@ -173,7 +173,7 @@ comment                 //comment
 key_value               //key-value pair
     = a_:key whitespace* "=" whitespace* b_:value
       {
-        return [a_, b_];
+        return [a_, b_.value];
       }
 
 key                     //key
@@ -210,7 +210,10 @@ string                  //string
 basic_string            //basic string
     = '"' a_:basic_char* '"'
       {
-        return a_.join('');
+        return {
+          type: 'string',
+          value: a_.join('')
+        };
       }
 
 basic_char              //basic character
@@ -251,7 +254,10 @@ literal_string          //literal string
     = "'" literal_char* "'"
       {
         var s = text();
-        return s.substr(1, s.length - 2);
+        return {
+          type: 'string',
+          value: s.substr(1, s.length - 2)
+        };
       }
 
 literal_char            //literal character
@@ -260,7 +266,10 @@ literal_char            //literal character
 ml_basic_string         //multi-line basic string
     = '"""' newline? a_:ml_basic_text* '"""'
       {
-        return a_.join('').replace(/\\\r?\n(?:\r?\n|[ \t])*/g, '');
+        return {
+          type: 'string',
+          value: a_.join('').replace(/\\\r?\n(?:\r?\n|[ \t])*/g, '')
+        };
       }
 
 ml_basic_text           //multi-line basic text
@@ -284,7 +293,10 @@ ml_unescaped_char       //multi-line normal basic character
 ml_literal_string       //multi-line literal string
     = "'''" newline? a_:ml_literal_text* "'''"
       {
-        return a_.join('');
+        return {
+          type: 'string',
+          value: a_.join('')
+        };
       }
 
 ml_literal_text         //multi-line literal text
@@ -300,11 +312,17 @@ ml_literal_char         //multi-line literal character
 boolean                 //boolean value
     = "true"
       {
-        return true;
+        return {
+          type: 'boolean',
+          value: true
+        };
       }
     / "false"
       {
-        return false;
+        return {
+          type: 'boolean',
+          value: false
+        };
       }
 
 float                   //floating-point number
@@ -316,7 +334,10 @@ float                   //floating-point number
         if (!isFinite(number)) {
           error(s + 'is not a 64-bit floating-point number.');
         }
-        return number;
+        return {
+          type: 'float',
+          value: number
+        };
       }
 
 fraction                //fractional part of floating-point number
@@ -358,7 +379,10 @@ integer                 //integer
         if (!isFinite(number)) {
           error(s + ' is not a 64-bit signed integer.');
         }
-        return number;
+        return {
+          type: 'integer',
+          value: number
+        };
       }
 
 sign                    //plus/minus sign
@@ -383,7 +407,10 @@ date_time               //date-time (RFC 3339
         if (!isFinite(date.getTime())) {
           error('Date-time ' + s + ' does not conform to RFC 3339.');
         }
-        return date;
+        return {
+          type: 'date-time',
+          value: date
+        };
       }
 
 full_date               //full date
@@ -426,7 +453,14 @@ array                   //array
                array_space*
                ( "," array_space* )? )? "]"
       {
-        return a_ ? a_[0] : [];
+        var o = {
+          type: 'array',
+          value: a_ ? a_[0] : []
+        };
+        for (var i = 0, arr = o.value, l = arr.length; i < l; i++) {
+          arr[i] = arr[i].value;
+        }
+        return o;
       }
 
 array_value             //array value
@@ -434,10 +468,11 @@ array_value             //array value
       {
         var array = [a_];
         if (b_) {
-          var type = typeof a_;
+          var type = a_.type;
           for (var i = 0, arr = b_[3], l = arr.length; i < l; i++) {
-            if (type !== typeof arr[i]) {
-              error(stringify(arr[i]) + ' should be of type "' + type + '".');
+            if (type !== arr[i].type) {
+              error(stringify(arr[i].value) + ' should be of type "' + type +
+                  '".');
             }
             array.push(arr[i]);
           }
@@ -465,7 +500,10 @@ inline_table            //inline table
             table[kv[0]] = kv[1];
           }
         }
-        return table;
+        return {
+          type: 'inline-table',
+          value: table
+        };
       }
 
 table_array_header      //header of table array
