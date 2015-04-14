@@ -33,14 +33,13 @@ str1: The quick brown fox jumps over the lazy dog.
 str2: The quick brown fox jumps over the lazy dog.
 key3: The quick brown fox jumps over the lazy dog.
 -----------------------------------------------------------%
-points = [ { "x" = 1, y = '2', z = 3 },   [
+points = [ { "x" = 1, y = '2', z = 3 },
            { "x" = 7, y = '8', z = 9 },
-           { "x" = 2, y = '4', z = 8 }, ] ]
+           { "x" = 2, y = '4', z = 8 }, ]
 -----------------------------%
 points: [ { x: 1, y: "2", z: 3 }
-        , [ { x: 7, y: "8", z: 9 }
-          , { x: 2, y: "4", z: 8 }
-          ]
+        , { x: 7, y: "8", z: 9 }
+        , { x: 2, y: "4", z: 8 }
         ]
 -----------------------------------------------------------%
 [[fruit]]
