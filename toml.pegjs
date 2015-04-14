@@ -182,10 +182,13 @@ Key
     / QuotedKey
 
 BareKey
-    = [a-zA-Z0-9\-_]+
+    = BareKeyCharacter+
       {
         return text();
       }
+
+BareKeyCharacter                                '[a-z], [A-Z], [0-9], "-", "_"'
+    = [a-zA-Z0-9\-_]
 
 QuotedKey
     = DoubleQuote chars:BasicCharacter+ DoubleQuote
@@ -447,16 +450,16 @@ MDay
 FullTime
     = Time TimeOffset?
 
-Time                                            "Time (HH:MM:SS[.sss])"
+Time
     = Hour ":" Minute ":" Second SecondFraction?
 
-Hour
+Hour                                            "Hour (HH)"
     = Digit Digit
 
-Minute
+Minute                                          "Minute (MM)"
     = Digit Digit
 
-Second
+Second                                          "Second (SS)"
     = Digit Digit
 
 SecondFraction
