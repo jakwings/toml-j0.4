@@ -10,14 +10,9 @@ function parse(src) {
   try {
     return toml.parse(src);
   } catch (err) {
-    var o = {};
-    Object.defineProperty(o, 'ERROR', {
-      get: function() {
-        return 'Line ' + err.line + ', column ' + err.column + ': ' + err;
-      },
-      enumerable: true
-    });
-    return o;
+    return {
+      ERROR: 'Line ' + err.line + ', column ' + err.column + ': ' + err
+    };
   }
 }
 
