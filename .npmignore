@@ -1,4 +1,9 @@
 /test
 /.travis.yml
+/toml.peg
+/toml.pegjs
+/build.js
+/dist/toml-browser.min.js
+/get_minified_js.sh
 .swo
 .swp
