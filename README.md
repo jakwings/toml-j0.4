@@ -3,14 +3,14 @@
 [![Build Status](https://travis-ci.org/jakwings/toml-j0.4.svg)](https://travis-ci.org/jakwings/toml-j0.4)
 [![NPM version](https://badge.fury.io/js/toml-j0.4.svg)](http://badge.fury.io/js/toml-j0.4)
 
-This is a [TOML] v[0.4.0] compliant parser built with [PEG.js].
+This is a [TOML] v[0.4.0] compliant *only* parser built with [PEG.js].
 
 [TOML]: https://github.com/toml-lang/toml
 [0.4.0]: https://github.com/toml-lang/toml/blob/master/versions/en/toml-v0.4.0.md
 [PEG.js]: http://pegjs.org
 
 
-### Demo
+### Live Demo
 
 <http://jakwings.github.io/toml-j0.4/>
 
@@ -44,17 +44,17 @@ There is no other API for now. Simple?
 
 ### Contribute
 
-If you find bugs, welcome to send me a pull request with (only) updated test
+If you found bugs, welcome to send me a pull request with (only) updated test
 scripts/fixtures!
 
-The scripts `lib/parser.js` and `dist/toml-browser.js` are generated with this
+The scripts `lib/parser.js` and `dist/toml-browser.js` are generated via this
 command:
 
 ```bash
 npm run build
 ```
 
-Then you can test them with this command:
+Then you can test them via this command:
 
 ```bash
 npm test
