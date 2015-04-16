@@ -427,7 +427,7 @@ DateTime
         var s = text();
         var date = new Date(s);
         if (!isFiniteNumber(date.getTime())) {
-          error('Date-time ' + s + ' does not conform to RFC 3339.');
+          error('Date-time ' + s + ' is invalid. It does not conform to RFC 3339 or this is a browser-specific problem.');
         }
         return {
           type: 'DateTime',
