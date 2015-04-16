@@ -2,7 +2,7 @@
   function genMsgRedefined(key) {
     return ('Value for ' + key + ' should not be redefined in the same table.');
   }
-  function isFinite(n) {
+  function isFiniteNumber(n) {
     return Number.isFinite ? Number.isFinite(n) :
         (typeof n === 'number' && isFinite(n));
   }
@@ -32,7 +32,7 @@
     s = s.replace(/^0+/, '');
     var maxCodePoint = '10FFFF';
     var codepoint = parseInt(s, 16);
-    if (!isFinite(codepoint) ||
+    if (!isFiniteNumber(codepoint) ||
         s.length > maxCodePoint.length ||
         (s.length === maxCodePoint.length && s > '10FFFF')) {
       error('U+' + s + ' is not a valid Unicode code point.');
@@ -353,7 +353,7 @@ Float
         // A double-precision 64-bit floating-point number in IEEE 754 standard.
         var s = text();
         var number = parseFloat(s.replace(/_/g, ''));
-        if (!isFinite(number)) {
+        if (!isFiniteNumber(number)) {
           error(s + 'is not a 64-bit floating-point number.');
         }
         return {
@@ -398,7 +398,7 @@ Integer
           error(s + ' is not a 64-bit signed integer.');
         }
         number = parseInt(number, 10);
-        if (!isFinite(number)) {
+        if (!isFiniteNumber(number)) {
           error(s + ' is not a 64-bit signed integer.');
         }
         return {
@@ -426,7 +426,7 @@ DateTime
       {
         var s = text();
         var date = new Date(s);
-        if (!isFinite(date.getTime())) {
+        if (!isFiniteNumber(date.getTime())) {
           error('Date-time ' + s + ' does not conform to RFC 3339.');
         }
         return {
