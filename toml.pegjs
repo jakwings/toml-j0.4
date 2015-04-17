@@ -34,7 +34,7 @@
     var codepoint = parseInt(s, 16);
     if (!isFiniteNumber(codepoint) ||
         s.length > maxCodePoint.length ||
-        (s.length === maxCodePoint.length && s > '10FFFF')) {
+        (s.length === maxCodePoint.length && s > maxCodePoint)) {
       error('U+' + s + ' is not a valid Unicode code point.');
     }
     var c = '';
@@ -56,7 +56,6 @@
     return s;
   }
   function checkTableKey(table, k) {
-    // TODO: Track the key path.
     if (hasOwnProperty(table, k)) {
       error(genMsgRedefined(stringify(k)));
     }
@@ -530,9 +529,9 @@ InlineTable
 
 TableArrayHeader
     = "[" path:TableHeader "]"
-    {
-      return path;
-    }
+      {
+        return path;
+      }
 
 TableHeader
     = "[" Whitespace*
