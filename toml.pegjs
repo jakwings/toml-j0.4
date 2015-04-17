@@ -447,7 +447,7 @@ MDay
     = Digit Digit
 
 FullTime
-    = Time TimeOffset?
+    = Time TimeOffset
 
 Time
     = Hour ":" Minute ":" Second SecondFraction?
