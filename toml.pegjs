@@ -46,15 +46,6 @@
     c += String.fromCharCode(codepoint);
     return c;
   }
-  function pathToStr(path, begin, end) {
-    begin = (begin != null) ? begin : 0;
-    end = (end != null) ? end : path.length;
-    var s = '';
-    for (var i = begin; i < end; i++) {
-      s += (s ? '.' : '') + stringify(path[i]);
-    }
-    return s;
-  }
   function checkTableKey(table, k) {
     if (hasOwnProperty(table, k)) {
       error(genMsgRedefined(stringify(k)));
