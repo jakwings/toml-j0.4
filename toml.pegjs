@@ -236,7 +236,7 @@ BasicCharacter
     / EscapedCharacter
 
 NormalCharacter                                 "NormalCharacter"
-    = !Newline [^"\\]
+    = !Newline [^\x00-\x1F"\\]
       {
         return text();
       }
@@ -281,8 +281,8 @@ LiteralString
         };
       }
 
-LiteralCharacter                                "NonSingleQuoteCharacter"
-    = !Newline [^']
+LiteralCharacter                                "NormalCharacter"
+    = !Newline [^\x00-\x08\x0A-\x1F']
 
 MultilineBasicString
     = ThreeDoubleQuotes Newline? chars:MultilineBasicText* ThreeDoubleQuotes
@@ -309,7 +309,7 @@ MultilineBasicCharacter
     / EscapedCharacter
 
 MultilineNormalCharacter                        "NormalCharacter"
-    = !Newline [^\\]
+    = !Newline [^\x00-\x1F\\]
 
 MultilineLiteralString
     = ThreeSingleQuotes Newline? chars:MultilineLiteralText* ThreeSingleQuotes
@@ -328,7 +328,7 @@ MultilineLiteralText
     / Newline
 
 MultilineLiteralCharacter                       "AnyCharacter"
-    = !Newline .
+    = !Newline [^\x00-\x08\x0A-\x1F]
 
 Boolean
     = "true"
