@@ -1,34 +1,52 @@
 {
-  function genMsgRedefined(key) {
+  var genMsgRedefined, isFiniteNumber, isArray, hasOwnProperty, stringify,
+      unescape, fromCodePoint, checkTableKey, findContext;
+
+  genMsgRedefined = function (key) {
     return ('Value for ' + key + ' should not be redefined in the same table.');
-  }
-  function isFiniteNumber(n) {
-    return Number.isFinite ? Number.isFinite(n) :
-        (typeof n === 'number' && isFinite(n));
-  }
-  function isArray(obj) {
-    return Array.isArray ? Array.isArray(obj) :
-        Object.prototype.toString.call(obj) === '[object Array]';
-  }
-  function hasOwnProperty(obj, key) {
+  };
+
+  isFiniteNumber = Number.isFinite || function (n) {
+    return typeof n === 'number' && isFinite(n);
+  };
+
+  isArray = Array.isArray || function (obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  };
+
+  hasOwnProperty = function (obj, key) {
     return Object.prototype.hasOwnProperty.call(obj, key);
-  }
-  function stringify(o) {
-    return JSON.stringify(o);
-  }
-  function unescape(c) {
+  };
+
+  stringify = typeof JSON === 'object' && JSON ? JSON.stringify : function (o) {
+    return '"' + String(o).replace(/[\x00-\x1F"\\]/g, function (c) {
+      switch (c) {
+        case '"': case '\\': return '\\' + c;
+        case '\t': return '\\t';
+        case '\n': return '\\n';
+        case '\r': return '\\r';
+        case '\b': return '\\b';
+        case '\f': return '\\f';
+        default:
+          var hex = c.charCodeAt(0).toString(16);
+          return '\\u' + '0000'.substr(hex.length) + hex;
+      }
+    }) + '"';
+  };
+
+  unescape = function (c) {
     switch (c) {
       case '"': case '\\': return c;
-      case 'b': return '\b';
-      case 'f': return '\f';
+      case 't': return '\t';
       case 'n': return '\n';
       case 'r': return '\r';
-      case 't': return '\t';
-      default: error('"' + c + '" cannot be escaped.');
+      case 'b': return '\b';
+      case 'f': return '\f';
+      default: error(stringify(c) + ' cannot be escaped.');
     }
-  }
-  // See: punnycode.ucs2.encode from https://github.com/bestiejs/punycode.js
-  function fromCodePoint(s) {
+  };
+
+  fromCodePoint = function (s) {
     s = s.replace(/^0+/, '');
     var maxCodePoint = '10FFFF';
     var codepoint = parseInt(s, 16);
@@ -37,6 +55,10 @@
         (s.length === maxCodePoint.length && s > maxCodePoint)) {
       error('U+' + s + ' is not a valid Unicode code point.');
     }
+    if (String.fromCodePoint) {
+      return String.fromCodePoint(codepoint);
+    }
+    // See: punnycode.ucs2.encode from https://github.com/bestiejs/punycode.js
     var c = '';
     if (codepoint > 0xFFFF) {
       codepoint -= 0x10000;
@@ -45,13 +67,15 @@
     }
     c += String.fromCharCode(codepoint);
     return c;
-  }
-  function checkTableKey(table, k) {
+  };
+
+  checkTableKey = function (table, k) {
     if (hasOwnProperty(table, k)) {
       error(genMsgRedefined(stringify(k)));
     }
-  }
-  function findContext(table, isTableArray, path) {
+  };
+
+  findContext = function (table, isTableArray, path) {
     var s = '';
     for (var i = 0, l = path.length; i < l; i++) {
       var k = path[i];
@@ -114,7 +138,7 @@
       table: table,
       path: path
     };
-  }
+  };
 
   var g_root = {};             // TOML table
   var g_context = {            // current context
