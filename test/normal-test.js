@@ -90,6 +90,7 @@ describe('Simple key-value pairs', function () {
     , ['"a\\U00000022b"', 'a"b']
     , ['"a\\U0001F600b"', 'a😀b']
     , ['"a\\U0001f600b"', 'a😀b']
+    , ['"a\\U0010fFfFb"', 'a􏿿b']
     ].forEach(function (a, i) {
       var key = 'basic-str_' + (i + 1);
       var title = stringify(key) + ' =\t' + a[0] + ' => ' + stringify(a[1]);
@@ -116,6 +117,7 @@ describe('Simple key-value pairs', function () {
     , ["'a\\U00000022b'", 'a\\U00000022b']
     , ["'a\\U0001F600b'", 'a\\U0001F600b']
     , ["'a\\U0001f600b'", 'a\\U0001f600b']
+    , ["'a\\U0010fFfFb'", 'a\\U0010fFfFb']
     ].forEach(function (a, i) {
       var key = 'literal-str_' + (i + 1);
       var title = key + ' =\t' + a[0] + ' => ' + stringify(a[1]);
