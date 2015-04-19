@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --bail --reporter spec test/*.js",
     "build": "node build.js",
+    "benchmark": "node benchmark.js",
     "prepublish": "node build.js"
   },
   "keywords": [
@@ -29,11 +30,14 @@
   },
   "homepage": "https://github.com/jakwings/toml-j0.4",
   "devDependencies": {
+    "ansi": "~0.3.0",
+    "benchmark": "~1.0.0",
     "browserify": "~9.0.8",
     "js-yaml": "~3.2.7",
     "mocha": "~2.2.4",
     "pegjs": "~0.8.0",
     "should": "~5.2.0",
+    "toml": "^2.2.2",
     "uglify-js": "~2.4.19"
   }
 }

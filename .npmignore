@@ -3,6 +3,7 @@
 /toml.peg
 /toml.pegjs
 /build.js
+/benchmark.js
 /dist/toml-browser.min.js
 /get_minified_js.sh
 .swo
