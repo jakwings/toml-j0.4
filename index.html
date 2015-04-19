@@ -18,7 +18,7 @@
         padding-top: 8%;
         width: 100%;
         height: 100vh;
-        min-height: 300px;
+        min-height: 500px;
         font-family: sans-serif;
         font-size: 18px;
         background: rgba(183,222,237,1);
@@ -32,6 +32,9 @@
       }
       a {
         color: green;
+      }
+      .error {
+        color: red;
       }
       .message-up, .message-down {
         height: 1%;
@@ -181,10 +184,11 @@ hosts = [
       var timerId = null;
       var inputElm = document.getElementById('input');
       var outputElm = document.getElementById('output');
-      var setText = function (text) {
+      var setText = function (text, ok) {
         clearTimeout(timerId);
         timerId = setTimeout(function () {
           outputElm.value = text;
+          outputElm.className = ok ? 'ok' : 'error';
         }, 400);
       };
       var transform = function () {
@@ -192,11 +196,11 @@ hosts = [
         try {
           var data = toml.parse(inputElm.value);
           text = JSON.stringify(data, null, '  ');
-          setText(text);
+          setText(text, true);
         } catch (err) {
           var text = 'Line ' + err.line + ', column ' + err.column + ': ' + err;
           setText(text);
-          console.error(err);
+          console.error(err, false);
         }
       };
       inputElm.addEventListener('input', transform, false);
