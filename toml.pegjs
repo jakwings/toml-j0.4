@@ -46,14 +46,10 @@
     }
   };
 
-  fromCodePoint = function (s) {
-    s = s.replace(/^0+/, '');
-    var maxCodePoint = '10FFFF';
-    var codepoint = parseInt(s, 16);
-    if (!isFiniteNumber(codepoint) ||
-        s.length > maxCodePoint.length ||
-        (s.length === maxCodePoint.length && s > maxCodePoint)) {
-      error('U+' + s + ' is not a valid Unicode code point.');
+  fromCodePoint = function (codepoint) {
+    if (!isFiniteNumber(codepoint) || codepoint < 0 || codepoint > 0x10FFFF) {
+      error('U+' + codepoint.toString(16) +
+          ' is not a valid Unicode code point.');
     }
     if (String.fromCodePoint) {
       return String.fromCodePoint(codepoint);
@@ -267,7 +263,7 @@ EscapedCharacter
         if (s.length <= 2) {
           return unescape(s[1]);
         }
-        return fromCodePoint(s.substr(2));
+        return fromCodePoint(parseInt(s.substr(2), 16));
       }
 
 ControlCharacter                                '"b", "f", "n", "r", "t"'
