@@ -4,7 +4,8 @@
 [![NPM version](https://badge.fury.io/js/toml-j0.4.svg)](http://badge.fury.io/js/toml-j0.4)
 
 As its name *TOML-j0.4* says, this is a [TOML] v[0.4.0] compliant parser built
-with [PEG.js].
+with [PEG.js]. You can customize it easily by modifying the grammar file
+`toml.pegjs`.
 
 [TOML]: https://github.com/toml-lang/toml
 [0.4.0]: https://github.com/toml-lang/toml/blob/master/versions/en/toml-v0.4.0.md
@@ -97,4 +98,5 @@ npm run benchmark
 
 This package is also used by other projects:
 
+*   [tomlify-j0.4](https://github.com/jakwings/tomlify-j0.4)
 *   [meta-matter](https://github.com/jakwings/meta-matter)
