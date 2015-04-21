@@ -1,7 +1,7 @@
 {
   "name": "toml-j0.4",
   "version": "1.0.9",
-  "description": "A TOML v0.4.0 compliant parser.",
+  "description": "A parser only compliant with TOML v0.4.0",
   "main": "toml.js",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --bail --reporter spec test/*.js",
