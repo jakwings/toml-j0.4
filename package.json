@@ -9,6 +9,13 @@
     "benchmark": "node benchmark.js",
     "prepublish": "node build.js"
   },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist/toml-browser.js",
+    "lib",
+    "toml.js"
+  ],
   "keywords": [
     "toml",
     "parser",

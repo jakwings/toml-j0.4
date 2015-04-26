@@ -1,5 +1,3 @@
 /node_modules
-/dist/toml-browser.min.js
-/get_minified_js.sh
 *.swp
 *.swo
