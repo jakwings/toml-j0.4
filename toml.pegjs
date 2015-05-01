@@ -97,6 +97,7 @@
               table[k].push(t);
               table = t;
             } else {
+              s += '.' + stringify(table[k].length - 1);
               table = table[k][table[k].length-1];
             }
           } else {
@@ -107,9 +108,10 @@
           }
         } else {
           if (isArray(table[k])) {
-            if (!g_table_arrays[s]) {
+            if (!g_table_arrays[s] || i + 1 === l) {
               error(genMsgRedefined(s));
             }
+            s += '.' + stringify(table[k].length - 1);
             table = table[k][table[k].length-1];
           } else {
             if (!g_tables[s]) {
