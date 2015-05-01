@@ -1,6 +1,6 @@
 {
   "name": "toml-j0.4",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "A parser only compliant with TOML v0.4.0",
   "main": "toml.js",
   "scripts": {
