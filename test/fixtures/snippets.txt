@@ -67,6 +67,9 @@ points: [ { x: 1, y: "2", z: 3 }
 [[fruit]]
   name = "banana"
 
+  [fruit.physical]
+    color = "yellow"
+
   [[fruit.variety]]
     name = "plantain"
 -----------------------------%
@@ -79,6 +82,8 @@ fruit:
       - name: red delicious
       - name: granny smith
   - name: banana
+    physical:
+      color: yellow
     variety:
       - name: plantain
 -----------------------------------------------------------%
