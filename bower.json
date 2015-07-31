@@ -1,0 +1,28 @@
+{
+  "name": "toml-j0.4",
+  "version": "1.0.0",
+  "homepage": "https://github.com/jakwings/toml-j0.4",
+  "authors": [
+    "Jak Wings <jakwings@gmail.com>"
+  ],
+  "description": "A parser for TOML v0.4.x only.",
+  "main": "dist/toml-browser.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "toml",
+    "parser",
+    "ini"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
