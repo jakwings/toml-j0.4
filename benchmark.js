@@ -20,9 +20,9 @@ var suite = new Benchmark.Suite({
   },
   onComplete: function () {
     console.log('Successful:\n\t' +
-        this.filter('successful').pluck('name').join(', '));
+        this.filter('successful').map('name').join(', '));
     console.log('Fastest:\n\t' +
-        this.filter('fastest').pluck('name').join(', '));
+        this.filter('fastest').map('name').join(', '));
   },
   onError: function (event) {
     console.error(event.target.error);

@@ -7,7 +7,7 @@ var PEG = require('pegjs');
 var grammar = fs.readFileSync(__dirname + '/toml.pegjs', {
   encoding: 'utf8'
 }).toString();
-var source = PEG.buildParser(grammar, {
+var source = PEG.generate(grammar, {
   output: 'source',
   optimize: 'speed'
 });
@@ -19,9 +19,7 @@ var bundle = browserify(__dirname + '/toml.js', {
   standalone: 'toml'
 }).bundle(function (err, buf) {
   if (err) { throw err; }
-  var code = UglifyJS.minify(buf.toString(), {
-    fromString: true
-  }).code;
+  var code = UglifyJS.minify(buf.toString()).code;
   fs.writeFileSync(__dirname + '/dist/toml-browser.js', code, {
     encoding: 'utf8'
   });

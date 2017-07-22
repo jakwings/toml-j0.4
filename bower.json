@@ -5,7 +5,7 @@
   "authors": [
     "Jak Wings <jakwings@gmail.com>"
   ],
-  "description": "A parser for TOML v0.4.x only.",
+  "description": "A parser only compliant with TOML v0.4.0",
   "main": "dist/toml-browser.js",
   "moduleType": [
     "amd",
