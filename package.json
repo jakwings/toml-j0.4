@@ -3,6 +3,7 @@
   "version": "1.0.10",
   "description": "A parser only compliant with TOML v0.4.0",
   "main": "toml.js",
+  "types": "toml.d.ts",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --bail --reporter spec test/*.js",
     "build": "node build.js",
