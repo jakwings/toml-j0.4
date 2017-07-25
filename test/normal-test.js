@@ -26,7 +26,7 @@ function checkObject(obj) {
   for (var key in obj) {
     should(obj).have.ownProperty(key);
     var type = typeOf(obj[key]);
-    should(typeRegexp.test(type)).be.true;
+    should(typeRegexp.test(type)).be.true();
     if (type === 'Object') {
       checkObject(obj[key]);
     } else if (type === 'Array') {
@@ -39,7 +39,7 @@ function checkArray(arr) {
   should(typeOf(arr)).equal('Array');
   for (var i = 0; i < arr.length; i++) {
     var type = typeOf(arr[i]);
-    should(typeRegexp.test(type)).be.true;
+    should(typeRegexp.test(type)).be.true();
     if (type === 'Object') {
       checkObject(arr[i]);
     } else if (type === 'Array') {
@@ -55,6 +55,25 @@ function replaceNL(s) {
 }
 
 
+describe('toml.SyntaxError', function () {
+  var data = null;
+  try {
+    toml.parse('x');
+  } catch (err) {
+    data = err;
+  }
+  it('properties', function () {
+    should(data).be.instanceof(toml.SyntaxError);
+    should(Object.keys(data)).matchEach(/^(?:message|offset|line|column)$/,
+      'should only contain valid keys');
+    should(data).have.property('message').which.is.String();
+    should(data).have.property('offset').which.is.Number();
+    should(data).have.property('line').which.is.Number();
+    should(data).have.property('column').which.is.Number();
+  });
+});
+
+
 describe('No data', function () {
   [ ''
   , ' '
@@ -68,7 +87,7 @@ describe('No data', function () {
     var data = parse(a);
     it(key + ': "' + replaceNL(a) + '" => {}', function () {
       checkObject(data);
-      should(data).have.keys();  // no keys
+      should(data).be.empty();
     });
   });
 });
@@ -266,7 +285,7 @@ describe('Simple key-value pairs', function () {
       it(title, function () {
         checkObject(data);
         should(data).have.keys(key);  // only
-        should(data[key]).be.Date;
+        should(data[key]).be.Date();
         should(data[key].getTime()).equal(a[1].getTime());
       });
     });
