@@ -4,7 +4,7 @@
 export function parse(src: string): any;
 
 export class SyntaxError {
-    constructor(message: string, expected: string, found: string, offset: number, line: number, column: number);
+    constructor(message: string, offset: number, line: number, column: number);
 
     /**
      * the line number
