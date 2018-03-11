@@ -100,3 +100,4 @@ This package is also used by other projects:
 
 *   [tomlify-j0.4](https://github.com/jakwings/tomlify-j0.4)
 *   [meta-matter](https://github.com/jakwings/meta-matter)
+*   [tomllint.com](https://github.com/gscho/toml-lint)
