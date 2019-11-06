@@ -41,7 +41,7 @@
     "ansi": "0.3.0",
     "benchmark": "~2.1.4",
     "browserify": "~14.4.0",
-    "js-yaml": "~3.9.0",
+    "js-yaml": "~3.13.1",
     "mocha": "~3.4.2",
     "pegjs": "0.10.0",
     "should": "~11.2.1",
